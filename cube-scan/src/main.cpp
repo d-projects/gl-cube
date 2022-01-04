@@ -1,4 +1,6 @@
 #include <iostream>
+#include "Constants.h"
+#include "RubiksCube.h"
 
 // GLEW
 #include <GL/glew.h>
@@ -43,14 +45,26 @@ int main() {
         std::cout << "Error" << std::endl;
     }
 
-    while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
+    RubiksCube* rc = new RubiksCube(Constants::DEFAULT_FACE_COLORS);
+    //RubiksCube* rc = new RubiksCube();
 
-        // openGL code will go here
+    rc->test(window);
+    //while (!glfwWindowShouldClose(window)) {
+    //    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    //    glEnable(GL_DEPTH_TEST);
+    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+    //    // input check will go here
+    //    // ....
+    //    
+    //    // render the cube
+    //    rc->test();
+
+    //    //rc->render();
+
+    //    glfwSwapBuffers(window);
+    //    glfwPollEvents();
+    //}
 
     glfwTerminate();
 }

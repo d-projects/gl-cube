@@ -19,15 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Constants.cpp" />
     <ClCompile Include="src\Cubelet.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RubiksCube.cpp" />
     <ClCompile Include="src\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\Cubelet.h" />
+    <ClInclude Include="src\Rotations.h" />
     <ClInclude Include="src\RubiksCube.h" />
     <ClInclude Include="src\Shader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\shader.fs" />
+    <None Include="src\shader.vs" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

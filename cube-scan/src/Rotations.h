@@ -1,0 +1,16 @@
+#pragma once
+
+enum Rotation {
+	FRONT_LEFT = 0,
+	FRONT_RIGHT = 1,
+	BACK_LEFT = 2,
+	BACK_RIGHT = 3,
+	LEFT_LEFT = 4,
+	LEFT_RIGHT = 5,
+	RIGHT_LEFT = 6,
+	RIGHT_RIGHT = 7,
+	TOP_LEFT = 8,
+	TOP_RIGHT = 9,
+	BOTTOM_LEFT = 10,
+	BOTTOM_RIGHT = 11,
+};
