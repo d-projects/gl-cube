@@ -1,5 +1,6 @@
 #include "RubiksCube.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Constants.h"
 
 
 RubiksCube::RubiksCube() {}
@@ -31,7 +32,6 @@ std::vector<std::string> RubiksCube::getCubeletFaceColors(int i, int j, int k) {
 	std::vector<std::vector<std::string>> topFace = _faceColors["top"];
 	std::vector<std::vector<std::string>> bottomFace = _faceColors["bottom"];
 
-
 	// i indexes slice (of 9 Cubelets), j indexes row, and k indexes column
 	// Order of value indices in map: {front, back, left, right, top, bottom}
 	std::map<std::vector<int>, std::vector<std::string>> faceColorMap = {
@@ -51,19 +51,19 @@ std::vector<std::string> RubiksCube::getCubeletFaceColors(int i, int j, int k) {
 		{ {1, 1, 0}, {"black", "black", leftFace[1][1], "black", "black", "black"} },
 		{ {1, 1, 1}, {"black", "black", "black", "black", "black", "black"} },
 		{ {1, 1, 2}, {"black", "black", "black", rightFace[1][1], "black", "black"} },
-		{ {1, 2, 0}, {"black", "black", "black", "black", "black", bottomFace[1][2]} },
-		{ {1, 2, 1}, {"black", "black", leftFace[2][1], "black", "black", bottomFace[1][1]} },
+		{ {1, 2, 0}, {"black", "black", leftFace[2][1], "black", "black", bottomFace[1][2]} },
+		{ {1, 2, 1}, {"black", "black", "black", "black", "black", bottomFace[1][1]}},
 		{ {1, 2, 2}, {"black", "black", "black", rightFace[2][1], "black", bottomFace[1][0]} },
 
-		{ {2, 0, 0}, {"black", backFace[0][2], "black", rightFace[0][2], topFace[0][2], "black"} },
+		{ {2, 0, 0}, {"black", backFace[0][0], leftFace[0][0], "black", topFace[0][0], "black"} },
 		{ {2, 0, 1}, {"black", backFace[0][1], "black", "black", topFace[0][1], "black"} },
-		{ {2, 0, 2}, {"black", backFace[0][0], leftFace[0][0], "black", topFace[0][0], "black"} },
-		{ {2, 1, 0}, {"black", backFace[1][2], "black", rightFace[1][2], "black", "black"} },
+		{ {2, 0, 2}, {"black", backFace[0][2], "black", rightFace[0][2], topFace[0][2], "black"} },
+		{ {2, 1, 0}, {"black", backFace[1][0], leftFace[1][0], "black", "black", "black"} },
 		{ {2, 1, 1}, {"black", backFace[1][1], "black", "black", "black", "black"} },
-		{ {2, 1, 2}, {"black", backFace[1][0], leftFace[1][0], "black", "black", "black"} },
-		{ {2, 2, 0}, {"black", backFace[2][2], "black", rightFace[2][2], "black", bottomFace[0][0]} },
+		{ {2, 1, 2}, {"black", backFace[1][2], "black", rightFace[1][2], "black", "black"} },
+		{ {2, 2, 0}, {"black", backFace[2][0], leftFace[2][0], "black", "black", bottomFace[0][2]} },
 		{ {2, 2, 1}, {"black", backFace[2][1], "black", "black", "black", bottomFace[0][1]} },
-		{ {2, 2, 2}, {"black", backFace[2][0], leftFace[2][0], "black", "black", bottomFace[0][2]} },
+		{ {2, 2, 2}, {"black", backFace[2][2], "black", rightFace[2][2], "black", bottomFace[0][0]} },
 	};
 
 	return faceColorMap[{i, j, k}];
@@ -75,20 +75,26 @@ std::vector<std::string> RubiksCube::getCubeletFaceColors(int i, int j, int k) {
 //}
 
 void RubiksCube::render() {
-	for (auto& slice : _cubes) {
-		for (auto& row : slice) {
-			for (auto& cube : row) {
+	for (int i = 0; i < _cubes.size(); i++) {
+		for (int j = 0; j < _cubes[0].size(); j++) {
+			for (int k = 0; k < _cubes[0][0].size(); k++) {
+				Cubelet cube = _cubes[i][j][k];
 				Shader s = cube.getShader();
 				s.use();
 				cube.bindVAO();
-				
+
 				glm::mat4 model = glm::mat4(1.0f);
 				model = glm::rotate(model, glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 				model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 				model *= cube.getModel();
 
+				float separationFactor = 2.5;
+				model = glm::translate(model, glm::vec3(separationFactor*(k - 1)*Constants::SCALE, 
+														separationFactor*-1*(j - 1)*Constants::SCALE, 
+														separationFactor*-1*(i - 1)*Constants::SCALE));
+
 				glm::mat4 view = glm::mat4(1.0f);
-				view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+				view = glm::translate(view, glm::vec3(0.0f, 0.0f, -9.0f));
 
 				glm::mat4 projection = glm::mat4(1.0f);
 				projection = glm::perspective(glm::radians(45.0f), 600.0f / 600.0f, 0.1f, 100.0f);

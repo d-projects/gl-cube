@@ -46,25 +46,21 @@ int main() {
     }
 
     RubiksCube* rc = new RubiksCube(Constants::DEFAULT_FACE_COLORS);
-    //RubiksCube* rc = new RubiksCube();
 
-    rc->test(window);
-    //while (!glfwWindowShouldClose(window)) {
-    //    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    //    glEnable(GL_DEPTH_TEST);
-    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    while (!glfwWindowShouldClose(window)) {
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glEnable(GL_DEPTH_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //    // input check will go here
-    //    // ....
-    //    
-    //    // render the cube
-    //    rc->test();
+        // input check will go here
+        // ....
+        
+        // render the cube
+        rc->render();
 
-    //    //rc->render();
-
-    //    glfwSwapBuffers(window);
-    //    glfwPollEvents();
-    //}
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
 
     glfwTerminate();
 }

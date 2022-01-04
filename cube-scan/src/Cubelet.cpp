@@ -9,11 +9,14 @@ Cubelet::Cubelet(std::vector<std::string> faceColors, unsigned int vao, unsigned
 	_shader = Shader("src/shader.vs", "src/shader.fs");
 	_rotationModel = glm::mat4(1.0f);
 
-    float* vertices = getVerticesWithColors(faceColors);
+    std::vector<float>* vertices = getVerticesWithColors(faceColors);
     float vv[216];
     for (int i = 0; i < 216; i++) {
-        vv[i] = vertices[i];
+        vv[i] = vertices->at(i);
     }
+    vertices->clear();
+    delete vertices;
+
 
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &vbo);
@@ -36,7 +39,7 @@ Cubelet::Cubelet(std::vector<std::string> faceColors, unsigned int vao, unsigned
     glBindVertexArray(0);
 }
 
-float* Cubelet::getVerticesWithColors(std::vector<std::string> colors) {
+std::vector<float>* Cubelet::getVerticesWithColors(std::vector<std::string> colors) {
     std::map<std::string, std::string> faceColors = {
         {"front", colors[0]},
         {"back", colors[1]},
@@ -46,11 +49,12 @@ float* Cubelet::getVerticesWithColors(std::vector<std::string> colors) {
         {"bottom", colors[5]},
     };
 
-    std::vector<float> vertexVector, faceColor;
+    std::vector<float>* vertexVector = new std::vector<float>();
+    std::vector<float> faceColor;
 
     for (int i = 0; i < Constants::VERTEX_COORDINATES.size(); i++) {
         // push scaled axis coordinate
-        vertexVector.push_back(Constants::VERTEX_COORDINATES[i] * Constants::SCALE);
+        vertexVector->push_back(Constants::VERTEX_COORDINATES[i] * Constants::SCALE);
 
         // after every coordinate, push the coordinate's color
         if (i % 3 == 2) {
@@ -61,14 +65,11 @@ float* Cubelet::getVerticesWithColors(std::vector<std::string> colors) {
             else if (i < 90) faceColor = Constants::COLOR_TO_RGB.at(faceColors.at("top"));
             else faceColor = Constants::COLOR_TO_RGB.at(faceColors.at("bottom"));
 
-            vertexVector.insert(vertexVector.end(), faceColor.begin(), faceColor.end());
+            vertexVector->insert(vertexVector->end(), faceColor.begin(), faceColor.end());
         }
     }
 
-    float* vertexArray = new float[216];
-    for (int i = 0; i < vertexVector.size(); i++) vertexArray[i] = vertexVector[i];
-
-    return vertexArray;
+    return vertexVector;
 }
 
 void Cubelet::bindVAO() {
