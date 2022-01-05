@@ -47,9 +47,15 @@
     <ClInclude Include="src\Rotations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RotationHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shader.vs" />
     <None Include="src\shader.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\TODO.txt" />
   </ItemGroup>
 </Project>

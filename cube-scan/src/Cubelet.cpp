@@ -1,13 +1,19 @@
 #include "Cubelet.h"
 #include "Constants.h"
 #include <map>
+#include "glm/gtc/matrix_transform.hpp"
 
 Cubelet::Cubelet() {}
 
-Cubelet::Cubelet(std::vector<std::string> faceColors, unsigned int vao, unsigned int vbo) {
+Cubelet::Cubelet(std::vector<std::string> faceColors, unsigned int vao, unsigned int vbo, int i, int j, int k) {
 	_vao = vao;
 	_shader = Shader("src/shader.vs", "src/shader.fs");
 	_rotationModel = glm::mat4(1.0f);
+    _rotationModel = glm::translate(_rotationModel, glm::vec3(
+        Constants::SEPARATION_FACTOR * (k - 1) * Constants::SCALE,
+        Constants::SEPARATION_FACTOR * -1 * (j - 1) * Constants::SCALE,
+        Constants::SEPARATION_FACTOR * -1 * (i - 1) * Constants::SCALE)
+    );
 
     std::vector<float>* vertices = getVerticesWithColors(faceColors);
     float vv[216];
@@ -86,4 +92,8 @@ Shader Cubelet::getShader() {
 
 glm::mat4 Cubelet::getModel() {
     return _rotationModel;
+}
+
+void Cubelet::setModel(glm::mat4 model) {
+    _rotationModel = model;
 }

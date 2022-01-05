@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Constants.h"
 #include "RubiksCube.h"
+#include "Rotations.h"
 
 // GLEW
 #include <GL/glew.h>
@@ -15,6 +16,46 @@
 
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;
+
+void processInput(GLFWwindow* window, RubiksCube* rc)
+{
+
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(FRONT_LEFT);
+
+    else if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(FRONT_RIGHT);
+
+    else if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(BACK_LEFT);
+
+    else if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(BACK_RIGHT);
+
+    else if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(LEFT_LEFT);
+
+    else if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(LEFT_RIGHT);
+
+    else if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(RIGHT_LEFT);
+
+    else if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(RIGHT_RIGHT);
+
+    else if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(TOP_LEFT);
+
+    else if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(TOP_RIGHT);
+
+    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(BOTTOM_LEFT);
+
+    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(BOTTOM_RIGHT);
+}
 
 int main() {
     GLFWwindow* window;
@@ -52,8 +93,7 @@ int main() {
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // input check will go here
-        // ....
+        processInput(window, rc);
         
         // render the cube
         rc->render();

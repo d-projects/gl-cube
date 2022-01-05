@@ -72,4 +72,8 @@ namespace Constants {
         { "bottom", std::vector<std::vector<std::string>>(3, {"yellow", "yellow", "yellow"}) },
         { "top", std::vector<std::vector<std::string>>(3, {"red", "red", "red"}) },
     };
+
+    extern const float FRAME_ROTATION_DEGREE = 1.0f;
+
+    extern const float SEPARATION_FACTOR = 2.5;
 }

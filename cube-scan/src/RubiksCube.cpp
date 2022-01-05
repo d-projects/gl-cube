@@ -6,6 +6,7 @@
 RubiksCube::RubiksCube() {}
 
 RubiksCube::RubiksCube(std::map<std::string, std::vector<std::vector<std::string>>> faceColors) {
+	_rh = RotationHandler();
 	_faceColors = faceColors;
 	_cubes.resize(3);
 
@@ -17,7 +18,7 @@ RubiksCube::RubiksCube(std::map<std::string, std::vector<std::vector<std::string
 			_cubes[i][j].resize(3);
 			for (int k = 0; k < 3; k++) {
 				cubeletFaceColors = getCubeletFaceColors(i, j, k);
-;				_cubes[i][j][k] = Cubelet(cubeletFaceColors, cubeCount, cubeCount);
+;				_cubes[i][j][k] = Cubelet(cubeletFaceColors, cubeCount, cubeCount, i, j, k);
 				cubeCount++;
 			}
 		}
@@ -70,9 +71,33 @@ std::vector<std::string> RubiksCube::getCubeletFaceColors(int i, int j, int k) {
 }
 
 
-//void RubiksCube::rotate(enum Rotation r) {
-//
-//}
+void RubiksCube::rotate(enum Rotation r) {
+	_rh.startRotation(r);
+
+	for (int i = 0; i < _cubes.size(); i++) {
+		for (int j = 0; j < _cubes[0].size(); j++) {
+			for (int k = 0; k < _cubes[0][0].size(); k++) {
+				if ((r == FRONT_RIGHT || r == FRONT_LEFT) && i == 0) {
+					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+				} else if ((r == BACK_RIGHT || r == BACK_LEFT) && i == 2) {
+					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+				} else if ((r == LEFT_RIGHT || r == LEFT_LEFT) && k == 0) {
+					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+				} else if ((r == RIGHT_RIGHT || r == RIGHT_LEFT) && k == 2) {
+					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+				} else if ((r == TOP_RIGHT || r == TOP_LEFT) && j == 0) {
+					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+				} else if ((r == BOTTOM_RIGHT || r == BOTTOM_LEFT) && j == 2) {
+					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+				}
+			}
+		}
+	}
+}
+
+bool RubiksCube::isRotationHappening() {
+	return _rh.rotationStarted;
+}
 
 void RubiksCube::render() {
 	for (int i = 0; i < _cubes.size(); i++) {
@@ -88,11 +113,6 @@ void RubiksCube::render() {
 				model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 				model *= cube.getModel();
 
-				float separationFactor = 2.5;
-				model = glm::translate(model, glm::vec3(separationFactor*(k - 1)*Constants::SCALE, 
-														separationFactor*-1*(j - 1)*Constants::SCALE, 
-														separationFactor*-1*(i - 1)*Constants::SCALE));
-
 				glm::mat4 view = glm::mat4(1.0f);
 				view = glm::translate(view, glm::vec3(0.0f, 0.0f, -9.0f));
 
@@ -106,5 +126,10 @@ void RubiksCube::render() {
 				cube.unbindVAO();
 			}
 		}
+	}
+
+	if (_rh.rotationStarted) {
+		_rh.handleRotation();
+		if (!_rh.rotationStarted) _rh.repositionCubes(_cubes);
 	}
 }
