@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # TODO file
 **/TODO.txt
+
+# Python venv
+**/venv

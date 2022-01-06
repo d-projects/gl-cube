@@ -20,11 +20,19 @@ const int WINDOW_HEIGHT = 600;
 void processInput(GLFWwindow* window, RubiksCube* rc)
 {
 
-    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
+    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(TURN_COUNTERCLOCKWISE);
+
+    else if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(TURN_CLOCKWISE);
+    
+    else if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(FRONT_LEFT);
 
     else if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(FRONT_RIGHT);
+
+    ////////////////////////////////////////////////////////////////////////////////////
 
     else if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(BACK_LEFT);
@@ -32,11 +40,21 @@ void processInput(GLFWwindow* window, RubiksCube* rc)
     else if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(BACK_RIGHT);
 
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(TURN_DOWN);
+
+    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(TURN_UP);
+
     else if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(LEFT_LEFT);
 
     else if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(LEFT_RIGHT);
+
+    ////////////////////////////////////////////////////////////////////////////////////
 
     else if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(RIGHT_LEFT);
@@ -44,11 +62,21 @@ void processInput(GLFWwindow* window, RubiksCube* rc)
     else if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(RIGHT_RIGHT);
 
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(TURN_RIGHT);
+
+    else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->rotate(TURN_LEFT);
+
     else if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(TOP_LEFT);
 
     else if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(TOP_RIGHT);
+
+    ////////////////////////////////////////////////////////////////////////////////////
 
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(BOTTOM_LEFT);

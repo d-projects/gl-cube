@@ -89,6 +89,8 @@ void RubiksCube::rotate(enum Rotation r) {
 					_rh.rotationCubes.push_back(_cubes[i][j][k]);
 				} else if ((r == BOTTOM_RIGHT || r == BOTTOM_LEFT) && j == 2) {
 					_rh.rotationCubes.push_back(_cubes[i][j][k]);
+				} else if (r == TURN_LEFT || r == TURN_RIGHT || r == TURN_UP || r == TURN_DOWN || r == TURN_CLOCKWISE || r == TURN_COUNTERCLOCKWISE) {
+					_rh.rotationCubes.push_back(_cubes[i][j][k]);
 				}
 			}
 		}

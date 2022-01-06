@@ -26,18 +26,39 @@ struct RotationHandler {
 
 	glm::vec3 getRotationAxis() {
 		switch (type) {
-			case FRONT_LEFT: return glm::vec3(0.0f, 0.0f, 1.0f);
-			case FRONT_RIGHT: return glm::vec3(0.0f, 0.0f, -1.0f);
+			case FRONT_LEFT:
+			case TURN_COUNTERCLOCKWISE:
+				return glm::vec3(0.0f, 0.0f, 1.0f);
+
+			case FRONT_RIGHT: 
+			case TURN_CLOCKWISE:
+				return glm::vec3(0.0f, 0.0f, -1.0f);
+
 			case BACK_LEFT: return glm::vec3(0.0f, 0.0f, -1.0f);
 			case BACK_RIGHT: return glm::vec3(0.0f, 0.0f, 1.0f);
-			case LEFT_LEFT: return glm::vec3(-1.0f, 0.0f, 0.0f);
-			case LEFT_RIGHT: return glm::vec3(1.0f, 0.0f, 0.0f);
+
+			case LEFT_LEFT: 
+			case TURN_UP:
+				return glm::vec3(-1.0f, 0.0f, 0.0f);
+
+			case LEFT_RIGHT: 
+			case TURN_DOWN:
+				return glm::vec3(1.0f, 0.0f, 0.0f);
+
 			case RIGHT_LEFT: return glm::vec3(1.0f, 0.0f, 0.0f);
 			case RIGHT_RIGHT: return glm::vec3(-1.0f, 0.0f, 0.0f);
+
+			case TOP_LEFT: 
+			case TURN_RIGHT:
+				return glm::vec3(0.0f, 1.0f, 0.0f);
+
+			case TOP_RIGHT: 
+			case TURN_LEFT:
+				return glm::vec3(0.0f, -1.0f, 0.0f);
+
 			case BOTTOM_LEFT: return glm::vec3(0.0f, -1.0f, 0.0f);
 			case BOTTOM_RIGHT: return glm::vec3(0.0f, 1.0f, 0.0f);
-			case TOP_LEFT: return glm::vec3(0.0f, 1.0f, 0.0f);
-			case TOP_RIGHT: return glm::vec3(0.0f, -1.0f, 0.0f);
+
 		}
 	}
 
@@ -55,29 +76,50 @@ struct RotationHandler {
 			case BOTTOM_RIGHT: return { {2, 2, 2}, {0, 2, 0}, {1} };
 			case TOP_LEFT: return { {2, 0, 0}, {0, 0, 2}, {0} };
 			case TOP_RIGHT: return { {2, 0, 0}, {0, 0, 2}, {1} };
-
+			case X_MIDDLE_LEFT: return { {2, 0, 1}, {0, 2, 1}, {0} };
+			case X_MIDDLE_RIGHT: return { {2, 0, 1}, {0, 2, 1}, {1} };
+			case Y_MIDDLE_LEFT: return { {2, 1, 0}, {0, 1, 2}, {0} };
+			case Y_MIDDLE_RIGHT: return { {2, 1, 0}, {0, 1, 2}, {1} };
+			case Z_MIDDLE_LEFT: return { {1, 0, 0}, {1, 2, 2}, {0} };
+			case Z_MIDDLE_RIGHT: return { {1, 0, 0}, {1, 2, 2}, {1} };
 		}
 	}
 
 	std::map<std::string, std::string> getFaceSwaps() {
 		switch (type) {
-			case FRONT_LEFT: return { { "front", "front" }, { "back", "back" }, { "left", "top" }, { "right", "bottom" }, { "top", "right" }, { "bottom", "left" } };
-			case FRONT_RIGHT: return { { "front", "front" }, { "back", "back" }, { "left", "bottom" }, { "right", "top" }, { "top", "left" }, { "bottom", "right" } };
+			case FRONT_LEFT: 
+			case Z_MIDDLE_LEFT:
+				return { { "front", "front" }, { "back", "back" }, { "left", "top" }, { "right", "bottom" }, { "top", "right" }, { "bottom", "left" } };
+
+			case FRONT_RIGHT: 
+			case Z_MIDDLE_RIGHT:
+				return { { "front", "front" }, { "back", "back" }, { "left", "bottom" }, { "right", "top" }, { "top", "left" }, { "bottom", "right" } };
 
 			case BACK_RIGHT: return { { "front", "front" }, { "back", "back" }, { "left", "top" }, { "right", "bottom" }, { "top", "right" }, { "bottom", "left" } };
 			case BACK_LEFT: return { { "front", "front" }, { "back", "back" }, { "left", "bottom" }, { "right", "top" }, { "top", "left" }, { "bottom", "right" } };
 
-			case LEFT_LEFT: return { { "front", "bottom" }, { "back", "top" }, { "left", "left" }, { "right", "right" }, { "top", "front" }, { "bottom", "back" } };
-			case LEFT_RIGHT: return { { "front", "top" }, { "back", "bottom" }, { "left", "left" }, { "right", "right" }, { "top", "back" }, { "bottom", "front" } };
+			case LEFT_LEFT: 
+			case X_MIDDLE_LEFT:
+				return { { "front", "bottom" }, { "back", "top" }, { "left", "left" }, { "right", "right" }, { "top", "front" }, { "bottom", "back" } };
+
+			case LEFT_RIGHT: 
+			case X_MIDDLE_RIGHT:
+				return { { "front", "top" }, { "back", "bottom" }, { "left", "left" }, { "right", "right" }, { "top", "back" }, { "bottom", "front" } };
 
 			case RIGHT_LEFT: return { { "front", "top" }, { "back", "bottom" }, { "left", "left" }, { "right", "right" }, { "top", "back" }, { "bottom", "front" } };
 			case RIGHT_RIGHT: return { { "front", "bottom" }, { "back", "top" }, { "left", "left" }, { "right", "right" }, { "top", "front" }, { "bottom", "back" } };
 
+			case TOP_LEFT: 
+			case Y_MIDDLE_LEFT:
+				return { { "front", "left" }, { "back", "right" }, { "left", "back" }, { "right", "front" }, { "top", "top" }, { "bottom", "bottom" } };
+
+			case TOP_RIGHT: 
+			case Y_MIDDLE_RIGHT:
+				return { { "front", "right" }, { "back", "left" }, { "left", "front" }, { "right", "back" }, { "top", "top" }, { "bottom", "bottom" } };
+
 			case BOTTOM_LEFT: return { { "front", "right" }, { "back", "left" }, { "left", "front" }, { "right", "back" }, { "top", "top" }, { "bottom", "bottom" } };
 			case BOTTOM_RIGHT: return { { "front", "left" }, { "back", "right" }, { "left", "back" }, { "right", "front" }, { "top", "top" }, { "bottom", "bottom" } };
 
-			case TOP_LEFT: return { { "front", "left" }, { "back", "right" }, { "left", "back" }, { "right", "front" }, { "top", "top" }, { "bottom", "bottom" } };
-			case TOP_RIGHT: return { { "front", "right" }, { "back", "left" }, { "left", "front" }, { "right", "back" }, { "top", "top" }, { "bottom", "bottom" } };
 		}
 	}
 
@@ -162,6 +204,13 @@ struct RotationHandler {
 		}
 	}
 
+	void specificReposition(std::vector<std::vector<std::vector<Cubelet*>>>& cubes, enum Rotation r) {
+		enum Rotation temp = type;
+		type = r;
+		genericReposition(cubes);
+		type = temp;
+	}
+
 	void handleRotation() {
 		glm::vec3 rotationAxis = getRotationAxis();
 		for (auto cube : rotationCubes) {
@@ -179,6 +228,32 @@ struct RotationHandler {
 	}
 
 	void repositionCubes(std::vector<std::vector<std::vector<Cubelet*>>>& cubes) {
-		genericReposition(cubes);
+		if (type == TURN_RIGHT) {
+			specificReposition(cubes, TOP_LEFT);
+			specificReposition(cubes, Y_MIDDLE_LEFT);
+			specificReposition(cubes, BOTTOM_RIGHT);
+		} else if (type == TURN_LEFT) {
+			specificReposition(cubes, TOP_RIGHT);
+			specificReposition(cubes, Y_MIDDLE_RIGHT);
+			specificReposition(cubes, BOTTOM_LEFT);
+		} else if (type == TURN_UP) {
+			specificReposition(cubes, LEFT_LEFT);
+			specificReposition(cubes, X_MIDDLE_LEFT);
+			specificReposition(cubes, RIGHT_RIGHT);
+		} else if (type == TURN_DOWN) {
+			specificReposition(cubes, LEFT_RIGHT);
+			specificReposition(cubes, X_MIDDLE_RIGHT);
+			specificReposition(cubes, RIGHT_LEFT);
+		} else if (type == TURN_CLOCKWISE) {
+			specificReposition(cubes, FRONT_RIGHT);
+			specificReposition(cubes, Z_MIDDLE_RIGHT);
+			specificReposition(cubes, BACK_LEFT);
+		} else if (type == TURN_COUNTERCLOCKWISE) {
+			specificReposition(cubes, FRONT_LEFT);
+			specificReposition(cubes, Z_MIDDLE_LEFT);
+			specificReposition(cubes, BACK_RIGHT);
+		} else {
+			genericReposition(cubes);
+		}	
 	}
 };
