@@ -5,10 +5,10 @@
 
 RubiksCube::RubiksCube() {}
 
-RubiksCube::RubiksCube(std::map<std::string, std::vector<std::vector<std::string>>> faceColors) {
+RubiksCube::RubiksCube(std::map<std::string, std::vector<std::vector<std::string>>> initialFaceColors) {
 	_rh = RotationHandler();
-	_faceColors = faceColors;
 	_cubes.resize(3);
+	_solving = false;
 
 	int cubeCount = 1;
 	std::vector<std::string> cubeletFaceColors;
@@ -17,21 +17,21 @@ RubiksCube::RubiksCube(std::map<std::string, std::vector<std::vector<std::string
 		for (int j = 0; j < 3; j++) {
 			_cubes[i][j].resize(3);
 			for (int k = 0; k < 3; k++) {
-				cubeletFaceColors = getCubeletFaceColors(i, j, k);
-;				_cubes[i][j][k] = Cubelet(cubeletFaceColors, cubeCount, cubeCount, i, j, k);
+				cubeletFaceColors = getCubeletInitialFaceColors(initialFaceColors, i, j, k);
+;				_cubes[i][j][k] = new Cubelet(cubeletFaceColors, cubeCount, cubeCount, i, j, k);
 				cubeCount++;
 			}
 		}
 	}
 }
 
-std::vector<std::string> RubiksCube::getCubeletFaceColors(int i, int j, int k) {
-	std::vector<std::vector<std::string>> frontFace = _faceColors["front"];
-	std::vector<std::vector<std::string>> backFace = _faceColors["back"];
-	std::vector<std::vector<std::string>> leftFace = _faceColors["left"];
-	std::vector<std::vector<std::string>> rightFace = _faceColors["right"];
-	std::vector<std::vector<std::string>> topFace = _faceColors["top"];
-	std::vector<std::vector<std::string>> bottomFace = _faceColors["bottom"];
+std::vector<std::string> RubiksCube::getCubeletInitialFaceColors(std::map<std::string, std::vector<std::vector<std::string>>> faceColors, int i, int j, int k) {
+	std::vector<std::vector<std::string>> frontFace = faceColors["front"];
+	std::vector<std::vector<std::string>> backFace = faceColors["back"];
+	std::vector<std::vector<std::string>> leftFace = faceColors["left"];
+	std::vector<std::vector<std::string>> rightFace = faceColors["right"];
+	std::vector<std::vector<std::string>> topFace = faceColors["top"];
+	std::vector<std::vector<std::string>> bottomFace = faceColors["bottom"];
 
 	// i indexes slice (of 9 Cubelets), j indexes row, and k indexes column
 	// Order of value indices in map: {front, back, left, right, top, bottom}
@@ -78,17 +78,17 @@ void RubiksCube::rotate(enum Rotation r) {
 		for (int j = 0; j < _cubes[0].size(); j++) {
 			for (int k = 0; k < _cubes[0][0].size(); k++) {
 				if ((r == FRONT_RIGHT || r == FRONT_LEFT) && i == 0) {
-					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+					_rh.rotationCubes.push_back(_cubes[i][j][k]);
 				} else if ((r == BACK_RIGHT || r == BACK_LEFT) && i == 2) {
-					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+					_rh.rotationCubes.push_back(_cubes[i][j][k]);
 				} else if ((r == LEFT_RIGHT || r == LEFT_LEFT) && k == 0) {
-					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+					_rh.rotationCubes.push_back(_cubes[i][j][k]);
 				} else if ((r == RIGHT_RIGHT || r == RIGHT_LEFT) && k == 2) {
-					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+					_rh.rotationCubes.push_back(_cubes[i][j][k]);
 				} else if ((r == TOP_RIGHT || r == TOP_LEFT) && j == 0) {
-					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+					_rh.rotationCubes.push_back(_cubes[i][j][k]);
 				} else if ((r == BOTTOM_RIGHT || r == BOTTOM_LEFT) && j == 2) {
-					_rh.rotationCubes.push_back(&_cubes[i][j][k]);
+					_rh.rotationCubes.push_back(_cubes[i][j][k]);
 				}
 			}
 		}
@@ -96,22 +96,22 @@ void RubiksCube::rotate(enum Rotation r) {
 }
 
 bool RubiksCube::isRotationHappening() {
-	return _rh.rotationStarted;
+	return _rh.rotationStarted || _solving;
 }
 
 void RubiksCube::render() {
 	for (int i = 0; i < _cubes.size(); i++) {
 		for (int j = 0; j < _cubes[0].size(); j++) {
 			for (int k = 0; k < _cubes[0][0].size(); k++) {
-				Cubelet cube = _cubes[i][j][k];
-				Shader s = cube.getShader();
+				Cubelet* cube = _cubes[i][j][k];
+				Shader s = cube->getShader();
 				s.use();
-				cube.bindVAO();
+				cube->bindVAO();
 
 				glm::mat4 model = glm::mat4(1.0f);
 				model = glm::rotate(model, glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 				model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-				model *= cube.getModel();
+				model *= cube->getModel();
 
 				glm::mat4 view = glm::mat4(1.0f);
 				view = glm::translate(view, glm::vec3(0.0f, 0.0f, -9.0f));
@@ -123,7 +123,7 @@ void RubiksCube::render() {
 				s.setMat4("transform", transform);
 
 				glDrawArrays(GL_TRIANGLES, 0, 36);
-				cube.unbindVAO();
+				cube->unbindVAO();
 			}
 		}
 	}
@@ -132,4 +132,81 @@ void RubiksCube::render() {
 		_rh.handleRotation();
 		if (!_rh.rotationStarted) _rh.repositionCubes(_cubes);
 	}
+}
+
+std::vector<std::string> RubiksCube::getOrderedFaceColors() {
+	std::vector<std::string> orderedFaceColors;
+
+	// push TOP face colors
+	for (int i = 2; i >= 0; i--) {
+		for (int k = 0; k < 3; k++) {
+			orderedFaceColors.push_back(_cubes[i][0][k]->getFaceColors()["top"]);
+		}
+	}
+
+	// for each horizontal slice, push outer faces in this order: LEFT face, FRONT face, RIGHT face, BACK face
+	// (from left to right on each face)
+	for (int j = 0; j < 3; j++) {
+		for (int i = 2; i >= 0; i--) {
+			orderedFaceColors.push_back(_cubes[i][j][0]->getFaceColors()["left"]);
+		}
+		for (int k = 0; k < 3; k++) {
+			orderedFaceColors.push_back(_cubes[0][j][k]->getFaceColors()["front"]);
+		}
+		for (int i = 0; i < 3; i++) {
+			orderedFaceColors.push_back(_cubes[i][j][2]->getFaceColors()["right"]);
+		}
+		for (int k = 2; k >= 0; k--) {
+			orderedFaceColors.push_back(_cubes[2][j][k]->getFaceColors()["back"]);
+		}
+	}
+
+	// push BOTTOM face colors
+	for (int i = 0; i < 3; i++) {
+		for (int k = 0; k < 3; k++) {
+			orderedFaceColors.push_back(_cubes[i][2][k]->getFaceColors()["bottom"]);
+		}
+	}
+
+	for (auto& color : orderedFaceColors) color = std::toupper(color[0]);
+	return orderedFaceColors;
+}
+
+void RubiksCube::solve() {
+	_solving = true;
+
+	std::vector<std::string> faceColors = getOrderedFaceColors();
+	int index = 0;
+	for (int i = 0; i < 3; i++) {
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << std::endl;
+	}
+
+	for (int i = 0; i < 3; i++) {
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << std::endl;
+	}
+
+
+	for (int i = 0; i < 3; i++) {
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << faceColors[index++];
+		std::cout << std::endl;
+	}
+
+	_solving = false;
 }

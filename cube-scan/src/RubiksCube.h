@@ -9,11 +9,11 @@
 #include "RotationHandler.h"
 
 class RubiksCube {
-	std::vector<std::vector<std::vector<Cubelet>>> _cubes;
-	std::map<std::string, std::vector<std::vector<std::string>>> _faceColors;
+	std::vector<std::vector<std::vector<Cubelet*>>> _cubes;
 	RotationHandler _rh;
+	bool _solving;
 
-	std::vector<std::string> getCubeletFaceColors(int, int, int);
+	std::vector<std::string> getCubeletInitialFaceColors(std::map<std::string, std::vector<std::vector<std::string>>>, int, int, int);
 
 public:
 	RubiksCube();
@@ -35,6 +35,7 @@ public:
 	void rotate(enum Rotation);
 	void render();
 	bool isRotationHappening();
-
+	std::vector<std::string> getOrderedFaceColors();
+	void solve();
 };
 

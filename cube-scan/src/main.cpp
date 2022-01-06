@@ -55,6 +55,9 @@ void processInput(GLFWwindow* window, RubiksCube* rc)
 
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(BOTTOM_RIGHT);
+
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && !rc->isRotationHappening())
+        rc->solve();
 }
 
 int main() {

@@ -2,7 +2,7 @@
 #include "Constants.h"
 
 namespace Constants {
-    extern const float SCALE = 0.5;
+    extern const float SCALE = 0.5f;
 
     extern const std::map<std::string, std::vector<float>> COLOR_TO_RGB = {
         {"green", {0.0f, 1.0f, 0.0f}},
@@ -75,5 +75,5 @@ namespace Constants {
 
     extern const float FRAME_ROTATION_DEGREE = 1.0f;
 
-    extern const float SEPARATION_FACTOR = 2.5;
+    extern const float SEPARATION_FACTOR = 2.5f;
 }

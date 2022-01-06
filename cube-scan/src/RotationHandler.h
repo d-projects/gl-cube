@@ -3,6 +3,7 @@
 #include "Cubelet.h"
 #include "Constants.h"
 #include "glm/glm.hpp";
+#include "glm/gtc/type_ptr.hpp"
 
 struct RotationHandler {
 	bool rotationStarted;
@@ -40,6 +41,127 @@ struct RotationHandler {
 		}
 	}
 
+	std::vector<std::vector<int>> getRotationIndices() {
+		switch (type) {
+			case FRONT_LEFT: return { {0, 0, 0}, {0, 2, 2}, {0} };
+			case FRONT_RIGHT: return { {0, 0, 0}, {0, 2, 2}, {1} };
+			case BACK_LEFT: return { {2, 0, 2}, {2, 2, 0}, {0} };
+			case BACK_RIGHT: return { {2, 0, 2}, {2, 2, 0}, {1} };
+			case LEFT_LEFT: return { {2, 0, 0}, {0, 2, 0}, {0} };
+			case LEFT_RIGHT: return { {2, 0, 0}, {0, 2, 0}, {1} };
+			case RIGHT_LEFT: return { {0, 0, 2}, {2, 2, 2}, {0} };
+			case RIGHT_RIGHT: return { {0, 0, 2}, {2, 2, 2}, {1} };
+			case BOTTOM_LEFT: return { {2, 2, 2}, {0, 2, 0}, {0} };
+			case BOTTOM_RIGHT: return { {2, 2, 2}, {0, 2, 0}, {1} };
+			case TOP_LEFT: return { {2, 0, 0}, {0, 0, 2}, {0} };
+			case TOP_RIGHT: return { {2, 0, 0}, {0, 0, 2}, {1} };
+
+		}
+	}
+
+	std::map<std::string, std::string> getFaceSwaps() {
+		switch (type) {
+			case FRONT_LEFT: return { { "front", "front" }, { "back", "back" }, { "left", "top" }, { "right", "bottom" }, { "top", "right" }, { "bottom", "left" } };
+			case FRONT_RIGHT: return { { "front", "front" }, { "back", "back" }, { "left", "bottom" }, { "right", "top" }, { "top", "left" }, { "bottom", "right" } };
+
+			case BACK_RIGHT: return { { "front", "front" }, { "back", "back" }, { "left", "top" }, { "right", "bottom" }, { "top", "right" }, { "bottom", "left" } };
+			case BACK_LEFT: return { { "front", "front" }, { "back", "back" }, { "left", "bottom" }, { "right", "top" }, { "top", "left" }, { "bottom", "right" } };
+
+			case LEFT_LEFT: return { { "front", "bottom" }, { "back", "top" }, { "left", "left" }, { "right", "right" }, { "top", "front" }, { "bottom", "back" } };
+			case LEFT_RIGHT: return { { "front", "top" }, { "back", "bottom" }, { "left", "left" }, { "right", "right" }, { "top", "back" }, { "bottom", "front" } };
+
+			case RIGHT_LEFT: return { { "front", "top" }, { "back", "bottom" }, { "left", "left" }, { "right", "right" }, { "top", "back" }, { "bottom", "front" } };
+			case RIGHT_RIGHT: return { { "front", "bottom" }, { "back", "top" }, { "left", "left" }, { "right", "right" }, { "top", "front" }, { "bottom", "back" } };
+
+			case BOTTOM_LEFT: return { { "front", "right" }, { "back", "left" }, { "left", "front" }, { "right", "back" }, { "top", "top" }, { "bottom", "bottom" } };
+			case BOTTOM_RIGHT: return { { "front", "left" }, { "back", "right" }, { "left", "back" }, { "right", "front" }, { "top", "top" }, { "bottom", "bottom" } };
+
+			case TOP_LEFT: return { { "front", "left" }, { "back", "right" }, { "left", "back" }, { "right", "front" }, { "top", "top" }, { "bottom", "bottom" } };
+			case TOP_RIGHT: return { { "front", "right" }, { "back", "left" }, { "left", "front" }, { "right", "back" }, { "top", "top" }, { "bottom", "bottom" } };
+		}
+	}
+
+	void transposeMatrix(std::vector<std::vector<Cubelet*>>& matrix) {
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < i; j++) {
+				std::swap(matrix[i][j], matrix[j][i]);
+			}
+		}
+	}
+
+	void flipMatrixRows(std::vector<std::vector<Cubelet*>>& matrix) {
+		for (int i = 0; i < 3/2; i++) {
+			std::swap(matrix[i], matrix[2 - i]);
+		}
+	}
+
+	void flipMatrixCols(std::vector<std::vector<Cubelet*>>& matrix) {
+		for (int j = 0; j < 3/2; j++) {
+			for (int i = 0; i < 3; i++) {
+				std::swap(matrix[i][j], matrix[i][2 - j]);
+			}
+		}
+	}
+
+	void genericReposition(std::vector<std::vector<std::vector<Cubelet*>>>& cubes) {
+		std::vector<std::vector<int>> v = getRotationIndices();
+		int i_begin = v[0][0]; int i_end = v[1][0]; int i_increment = i_end >= i_begin ? 1 : -1;
+
+		int j_begin = v[0][1]; int j_end = v[1][1]; int j_increment = j_end >= j_begin ? 1 : -1;
+
+		int k_begin = v[0][2]; int k_end = v[1][2]; int k_increment = k_end >= k_begin ? 1 : -1;
+
+		std::vector<std::vector<Cubelet*>> matrix;
+		matrix.resize(3);
+		for (int i = 0; i < 3; i++) matrix[i].resize(3);
+
+		int matrix_i = 0; int matrix_j = 0;
+
+		// get face matrix
+		for (int j = j_begin; j != j_end + j_increment; j += j_increment) {
+			for (int i = i_begin; i != i_end + i_increment; i += i_increment) {
+				for (int k = k_begin; k != k_end + k_increment; k += k_increment) {
+					matrix[matrix_i][matrix_j] = cubes[i][j][k];
+					matrix_j++;
+					if (matrix_j > 2) {
+						matrix_i++;
+						matrix_j = 0;
+					}
+				}
+			}
+		}
+
+		transposeMatrix(matrix);
+		if (v[2][0] == 1) flipMatrixCols(matrix); // clockwise rotation
+		else flipMatrixRows(matrix); // counter-clockwise rotation
+
+		matrix_i = 0; matrix_j = 0;
+
+		// set face matrix
+		for (int j = j_begin; j != j_end + j_increment; j += j_increment) {
+			for (int i = i_begin; i != i_end + i_increment; i += i_increment) {
+				for (int k = k_begin; k != k_end + k_increment; k += k_increment) {
+					cubes[i][j][k] = matrix[matrix_i][matrix_j];
+					matrix_j++;
+					if (matrix_j > 2) {
+						matrix_i++;
+						matrix_j = 0;
+					}
+				}
+			}
+		}
+
+		std::map<std::string, std::string> faceSwaps = getFaceSwaps();
+		for (auto c : rotationCubes) {
+			std::map<std::string, std::string> faceColors = c->getFaceColors();
+			std::map<std::string, std::string> newFaceColors;
+			for (auto fc : faceColors) {
+				newFaceColors[fc.first] = faceColors[faceSwaps[fc.first]];
+			}
+			c->setFaceColors(newFaceColors);
+		}
+	}
+
 	void handleRotation() {
 		glm::vec3 rotationAxis = getRotationAxis();
 		for (auto cube : rotationCubes) {
@@ -56,200 +178,7 @@ struct RotationHandler {
 			rotationStarted = false;
 	}
 
-	void frontRightReposition(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[0][0][0] = cubes[0][2][0];
-		newCubes[0][0][1] = cubes[0][1][0];
-		newCubes[0][0][2] = cubes[0][0][0];
-		newCubes[0][1][0] = cubes[0][2][1];
-		newCubes[0][1][2] = cubes[0][0][1];
-		newCubes[0][2][0] = cubes[0][2][2];
-		newCubes[0][2][1] = cubes[0][1][2];
-		newCubes[0][2][2] = cubes[0][0][2];
-
-		cubes = newCubes;
-	}
-
-	void frontLeftReposition(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[0][2][0] = cubes[0][0][0];
-		newCubes[0][1][0] = cubes[0][0][1];
-		newCubes[0][0][0] = cubes[0][0][2];
-		newCubes[0][2][1] = cubes[0][1][0];
-		newCubes[0][0][1] = cubes[0][1][2];
-		newCubes[0][2][2] = cubes[0][2][0];
-		newCubes[0][1][2] = cubes[0][2][1];
-		newCubes[0][0][2] = cubes[0][2][2];
-
-		cubes = newCubes;
-	}
-
-	void backRightReposition(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[2][0][2] = cubes[2][2][2];
-		newCubes[2][0][1] = cubes[2][1][2];
-		newCubes[2][0][0] = cubes[2][0][2];
-		newCubes[2][1][2] = cubes[2][2][1];
-		newCubes[2][1][0] = cubes[2][0][1];
-		newCubes[2][2][2] = cubes[2][2][0];
-		newCubes[2][2][1] = cubes[2][1][0];
-		newCubes[2][2][0] = cubes[2][0][0];
-
-		cubes = newCubes;
-	}
-
-	void backLeftReposition(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[2][2][2] = cubes[2][0][2];
-		newCubes[2][1][2] = cubes[2][0][1];
-		newCubes[2][0][2] = cubes[2][0][0];
-		newCubes[2][2][1] = cubes[2][1][2];
-		newCubes[2][0][1] = cubes[2][1][0];
-		newCubes[2][2][0] = cubes[2][2][2];
-		newCubes[2][1][0] = cubes[2][2][1];
-		newCubes[2][0][0] = cubes[2][2][0];
-
-		cubes = newCubes;
-	}
-
-	void leftRightReposistion(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[2][0][0] = cubes[2][2][0];
-		newCubes[1][0][0] = cubes[2][1][0];
-		newCubes[0][0][0] = cubes[2][0][0];
-		newCubes[2][1][0] = cubes[1][2][0];
-		newCubes[0][1][0] = cubes[1][0][0];
-		newCubes[2][2][0] = cubes[0][2][0];
-		newCubes[1][2][0] = cubes[0][1][0];
-		newCubes[0][2][0] = cubes[0][0][0];
-
-		cubes = newCubes;
-	}
-
-	void leftLeftReposition(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[2][2][0] = cubes[2][0][0];
-		newCubes[2][1][0] =	cubes[1][0][0];
-		newCubes[2][0][0] =	cubes[0][0][0];
-		newCubes[1][2][0] =	cubes[2][1][0];
-		newCubes[1][0][0] =	cubes[0][1][0];
-		newCubes[0][2][0] =	cubes[2][2][0];
-		newCubes[0][1][0] =	cubes[1][2][0];
-		newCubes[0][0][0] =	cubes[0][2][0];
-
-		cubes = newCubes;
-	}
-
-	void rightRightReposistion(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[0][0][2] = cubes[0][2][2];
-		newCubes[1][0][2] = cubes[0][1][2];
-		newCubes[2][0][2] = cubes[0][0][2];
-		newCubes[0][1][2] = cubes[1][2][2];
-		newCubes[2][1][2] = cubes[1][0][2];
-		newCubes[0][2][2] = cubes[2][2][2];
-		newCubes[1][2][2] = cubes[2][1][2];
-		newCubes[2][2][2] = cubes[2][0][2];
-
-		cubes = newCubes;
-	}
-
-	void rightLeftReposition(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[0][2][2] = cubes[0][0][2];
-		newCubes[0][1][2] = cubes[1][0][2];
-		newCubes[0][0][2] = cubes[2][0][2];
-		newCubes[1][2][2] = cubes[0][1][2];
-		newCubes[1][0][2] = cubes[2][1][2];
-		newCubes[2][2][2] = cubes[0][2][2];
-		newCubes[2][1][2] = cubes[1][2][2];
-		newCubes[2][0][2] = cubes[2][2][2];
-
-		cubes = newCubes;
-	}
-
-	void topRightReposition(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[2][0][0] = cubes[0][0][0];
-		newCubes[2][0][1] = cubes[1][0][0];
-		newCubes[2][0][2] = cubes[2][0][0];
-		newCubes[1][0][0] = cubes[0][0][1];
-		newCubes[1][0][2] = cubes[2][0][1];
-		newCubes[0][0][0] = cubes[0][0][2];
-		newCubes[0][0][1] = cubes[1][0][2];
-		newCubes[0][0][2] = cubes[2][0][2];
-
-		cubes = newCubes;
-	}
-
-	void topLeftReposition(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[0][0][0] = cubes[2][0][0];
-		newCubes[1][0][0] = cubes[2][0][1];
-		newCubes[2][0][0] = cubes[2][0][2];
-		newCubes[0][0][1] = cubes[1][0][0];
-		newCubes[2][0][1] = cubes[1][0][2];
-		newCubes[0][0][2] = cubes[0][0][0];
-		newCubes[1][0][2] = cubes[0][0][1];
-		newCubes[2][0][2] = cubes[0][0][2];
-
-		cubes = newCubes;
-	}
-
-	void bottomRightReposition(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[2][2][2] = cubes[0][2][2];
-		newCubes[2][2][1] = cubes[1][2][2];
-		newCubes[2][2][0] = cubes[2][2][2];
-		newCubes[1][2][2] = cubes[0][2][1];
-		newCubes[1][2][0] = cubes[2][2][1];
-		newCubes[0][2][2] = cubes[0][2][0];
-		newCubes[0][2][1] = cubes[1][2][0];
-		newCubes[0][2][0] = cubes[2][2][0];
-
-		cubes = newCubes;
-	}
-
-	void bottomLeftReposition(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		std::vector<std::vector<std::vector<Cubelet>>> newCubes = cubes;
-
-		newCubes[0][2][2] = cubes[2][2][2];
-		newCubes[1][2][2] = cubes[2][2][1];
-		newCubes[2][2][2] = cubes[2][2][0];
-		newCubes[0][2][1] = cubes[1][2][2];
-		newCubes[2][2][1] = cubes[1][2][0];
-		newCubes[0][2][0] = cubes[0][2][2];
-		newCubes[1][2][0] = cubes[0][2][1];
-		newCubes[2][2][0] = cubes[0][2][0];
-
-		cubes = newCubes;
-	}
-
-	void repositionCubes(std::vector<std::vector<std::vector<Cubelet>>>& cubes) {
-		switch (type) {
-			case FRONT_RIGHT: frontRightReposition(cubes); break;
-			case FRONT_LEFT: frontLeftReposition(cubes); break;
-			case BACK_RIGHT: backRightReposition(cubes); break;
-			case BACK_LEFT: backLeftReposition(cubes); break;
-			case LEFT_RIGHT: leftRightReposistion(cubes); break;
-			case LEFT_LEFT: leftLeftReposition(cubes); break;
-			case RIGHT_RIGHT: rightRightReposistion(cubes); break;
-			case RIGHT_LEFT: rightLeftReposition(cubes); break;
-			case TOP_RIGHT: topRightReposition(cubes); break;
-			case TOP_LEFT: topLeftReposition(cubes); break;
-			case BOTTOM_RIGHT: bottomRightReposition(cubes); break;
-			case BOTTOM_LEFT: bottomLeftReposition(cubes); break;
-		}
+	void repositionCubes(std::vector<std::vector<std::vector<Cubelet*>>>& cubes) {
+		genericReposition(cubes);
 	}
 };

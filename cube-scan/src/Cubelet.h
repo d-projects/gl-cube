@@ -1,13 +1,15 @@
 #pragma once
 #include <vector>
+#include <map>
 #include "Shader.h"
 
 class Cubelet {
 	Shader _shader;
 	glm::mat4 _rotationModel;
 	unsigned int _vao;
-
+	std::map<std::string, std::string> _faceColors;
 	std::vector<float>* getVerticesWithColors(std::vector<std::string>);
+
 
 public:
 	Cubelet();
@@ -19,4 +21,6 @@ public:
 	Shader getShader();
 	glm::mat4 getModel();
 	void setModel(glm::mat4 model);
+	void setFaceColors(std::map<std::string, std::string>);
+	std::map<std::string, std::string> getFaceColors();
 };
