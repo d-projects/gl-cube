@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\Constants.cpp" />
     <ClCompile Include="src\Cubelet.cpp" />
+    <ClCompile Include="src\GraphicsController.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\RotationHandler.cpp" />
     <ClCompile Include="src\RubiksCube.cpp" />
@@ -29,6 +30,7 @@
   <ItemGroup>
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\Cubelet.h" />
+    <ClInclude Include="src\GraphicsController.h" />
     <ClInclude Include="src\HTTPRequest.h" />
     <ClInclude Include="src\RotationHandler.h" />
     <ClInclude Include="src\Rotations.h" />

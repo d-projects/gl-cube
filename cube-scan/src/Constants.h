@@ -19,4 +19,9 @@ namespace Constants {
     extern const float SEPARATION_FACTOR;
 
     extern std::map<std::string, enum Rotation> ROTATION_ABBREVIATIONS;
+
+    extern const int WINDOW_WIDTH;
+    extern const int WINDOW_HEIGHT;
+
+    extern const char* TITLE;
 }

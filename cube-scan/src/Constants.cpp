@@ -104,4 +104,9 @@ namespace Constants {
         {"M", X_MIDDLE_RIGHT},
         {"Mi", X_MIDDLE_LEFT},
     };
+
+    extern const int WINDOW_WIDTH = 600;
+    extern const int WINDOW_HEIGHT = 600;
+
+    extern const char* TITLE = "Cube Scan";
 }
