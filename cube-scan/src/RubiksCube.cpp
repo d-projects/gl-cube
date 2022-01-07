@@ -1,7 +1,8 @@
 #include "RubiksCube.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "Constants.h"
-
+#include <json.hpp>
+#include "HTTPRequest.h"
 
 RubiksCube::RubiksCube() {}
 
@@ -89,7 +90,18 @@ void RubiksCube::rotate(enum Rotation r) {
 					_rh.rotationCubes.push_back(_cubes[i][j][k]);
 				} else if ((r == BOTTOM_RIGHT || r == BOTTOM_LEFT) && j == 2) {
 					_rh.rotationCubes.push_back(_cubes[i][j][k]);
-				} else if (r == TURN_LEFT || r == TURN_RIGHT || r == TURN_UP || r == TURN_DOWN || r == TURN_CLOCKWISE || r == TURN_COUNTERCLOCKWISE) {
+				}
+				else if ((r == X_MIDDLE_LEFT || r == X_MIDDLE_RIGHT) && k == 1) {
+					_rh.rotationCubes.push_back(_cubes[i][j][k]);
+				}
+				else if ((r == Y_MIDDLE_LEFT || r == Y_MIDDLE_RIGHT) && j == 1) {
+					_rh.rotationCubes.push_back(_cubes[i][j][k]);
+				}
+				else if ((r == Z_MIDDLE_LEFT || r == Z_MIDDLE_RIGHT) && i == 1) {
+					_rh.rotationCubes.push_back(_cubes[i][j][k]);
+				}
+				
+				else if (r == TURN_LEFT || r == TURN_RIGHT || r == TURN_UP || r == TURN_DOWN || r == TURN_CLOCKWISE || r == TURN_COUNTERCLOCKWISE) {
 					_rh.rotationCubes.push_back(_cubes[i][j][k]);
 				}
 			}
@@ -98,7 +110,7 @@ void RubiksCube::rotate(enum Rotation r) {
 }
 
 bool RubiksCube::isRotationHappening() {
-	return _rh.rotationStarted || _solving;
+	return _rh.rotationStarted;
 }
 
 void RubiksCube::render() {
@@ -132,11 +144,11 @@ void RubiksCube::render() {
 
 	if (_rh.rotationStarted) {
 		_rh.handleRotation();
-		if (!_rh.rotationStarted) _rh.repositionCubes(_cubes);
+		if (!_rh.rotationStarted) { _rh.repositionCubes(_cubes); printColors(); }
 	}
 }
 
-std::vector<std::string> RubiksCube::getOrderedFaceColors() {
+std::string RubiksCube::getOrderedFaceColors() {
 	std::vector<std::string> orderedFaceColors;
 
 	// push TOP face colors
@@ -170,14 +182,59 @@ std::vector<std::string> RubiksCube::getOrderedFaceColors() {
 		}
 	}
 
-	for (auto& color : orderedFaceColors) color = std::toupper(color[0]);
-	return orderedFaceColors;
+	std::string result;
+	for (auto& color : orderedFaceColors) result += std::toupper(color[0]);
+	return result;
+}
+
+bool RubiksCube::solving() {
+	return _solving;
+}
+
+void RubiksCube::nextSolveMove() {
+	rotate(Constants::ROTATION_ABBREVIATIONS[_solveMoves.top()]);
+	_solveMoves.pop();
+	if (_solveMoves.empty()) _solving = false;
 }
 
 void RubiksCube::solve() {
 	_solving = true;
 
-	std::vector<std::string> faceColors = getOrderedFaceColors();
+	std::string faceColors = getOrderedFaceColors();
+	    try
+	    {
+			std::string url = "http://127.0.0.1:8000/solve/" + faceColors;
+	        // you can pass http::InternetProtocol::V6 to Request to make an IPv6 request
+	        http::Request request{ url };
+	
+	        // send a get request
+	        const auto response = request.send("GET");
+	        std::string bodyJson = { response.body.begin(), response.body.end() };
+	        auto body = nlohmann::json::parse(bodyJson);
+	        if (body.count("error") != 0) {
+	            //body["error"][0];
+				std::cout << "Error occurred";
+	        }
+	        else {
+	            std::vector<std::string> moves = body["moves"];
+				std::reverse(moves.begin(), moves.end());
+
+				for (auto move : moves) {
+					std::cout << move << " ";
+					_solveMoves.push((std::string)move);
+				}
+	        }       
+	
+	    }
+	    catch (const std::exception& e)
+	    {
+	        std::cerr << "Request failed, error: " << e.what() << '\n';
+	    }
+
+}
+
+void RubiksCube::printColors() {
+	std::string faceColors = getOrderedFaceColors();
 	int index = 0;
 	for (int i = 0; i < 3; i++) {
 		std::cout << faceColors[index++];
@@ -210,5 +267,5 @@ void RubiksCube::solve() {
 		std::cout << std::endl;
 	}
 
-	_solving = false;
+	std::cout << std::endl;
 }

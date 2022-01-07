@@ -7,11 +7,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 #include "RotationHandler.h"
+#include <stack>
 
 class RubiksCube {
 	std::vector<std::vector<std::vector<Cubelet*>>> _cubes;
 	RotationHandler _rh;
 	bool _solving;
+	std::stack<std::string> _solveMoves;
 
 	std::vector<std::string> getCubeletInitialFaceColors(std::map<std::string, std::vector<std::vector<std::string>>>, int, int, int);
 
@@ -35,7 +37,10 @@ public:
 	void rotate(enum Rotation);
 	void render();
 	bool isRotationHappening();
-	std::vector<std::string> getOrderedFaceColors();
+	std::string getOrderedFaceColors();
 	void solve();
+	bool solving();
+	void nextSolveMove();
+	void printColors();
 };
 

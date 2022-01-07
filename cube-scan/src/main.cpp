@@ -14,8 +14,17 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp> 
 
+// sleep
+#include <chrono>
+#include <thread>
+
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
 
 void processInput(GLFWwindow* window, RubiksCube* rc)
 {
@@ -84,7 +93,9 @@ void processInput(GLFWwindow* window, RubiksCube* rc)
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && !rc->isRotationHappening())
         rc->rotate(BOTTOM_RIGHT);
 
-    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && !rc->isRotationHappening())
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && !rc->solving())
         rc->solve();
 }
 
@@ -110,6 +121,7 @@ int main() {
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     /* Fetch openGL function pointers using glew */
     GLenum err = glewInit();
@@ -119,12 +131,17 @@ int main() {
 
     RubiksCube* rc = new RubiksCube(Constants::DEFAULT_FACE_COLORS);
 
+
+    int i = 0;
+    std::vector<std::string> solverMoves;
+
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         processInput(window, rc);
+        if (rc->solving() && !rc->isRotationHappening()) rc->nextSolveMove();
         
         // render the cube
         rc->render();
