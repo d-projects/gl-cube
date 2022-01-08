@@ -2,6 +2,7 @@ from rubik.cube import Cube
 from rubik.solve import Solver
 from rubik.optimize import optimize_moves
 from fastapi import FastAPI
+import uvicorn
 
 app = FastAPI()
 
@@ -24,7 +25,11 @@ def solve(face_colors: str):
     if not cube.is_solved():
         return {"error": ["The cube could not be solved"]}
     else:
-        return {"moves": solver.moves}    
+        return {"moves": solver.moves}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host = "0.0.0.0", port=8000)   
 
 
 

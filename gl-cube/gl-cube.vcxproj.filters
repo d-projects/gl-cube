@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\RubiksCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -27,13 +24,16 @@
     <ClCompile Include="src\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Constants.cpp">
+    <ClCompile Include="src\GraphicsController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RotationHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GraphicsController.cpp">
+    <ClCompile Include="src\Constants.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,7 +44,16 @@
     <ClInclude Include="src\Cubelet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\HTTPRequest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GraphicsController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RotationHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Constants.h">
@@ -53,21 +62,5 @@
     <ClInclude Include="src\Rotations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RotationHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\HTTPRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GraphicsController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\shader.vs" />
-    <None Include="src\shader.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="src\TODO.txt" />
   </ItemGroup>
 </Project>

@@ -18,37 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Constants.cpp" />
-    <ClCompile Include="src\Cubelet.cpp" />
-    <ClCompile Include="src\GraphicsController.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\RotationHandler.cpp" />
-    <ClCompile Include="src\RubiksCube.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Constants.h" />
-    <ClInclude Include="src\Cubelet.h" />
-    <ClInclude Include="src\GraphicsController.h" />
-    <ClInclude Include="src\HTTPRequest.h" />
-    <ClInclude Include="src\RotationHandler.h" />
-    <ClInclude Include="src\Rotations.h" />
-    <ClInclude Include="src\RubiksCube.h" />
-    <ClInclude Include="src\Shader.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\shader.fs" />
-    <None Include="src\shader.vs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="src\TODO.txt" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{2e949a0a-7410-4e24-8b13-73c999749e66}</ProjectGuid>
-    <RootNamespace>cubescan</RootNamespace>
+    <ProjectGuid>{97dbf4f5-785f-4da5-bfc1-de6e65c57062}</ProjectGuid>
+    <RootNamespace>glcube</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -114,13 +88,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\dependencies\GLEW\include;$(SolutionDir)\dependencies\GLM\;$(SolutionDir)\dependencies\GLFW\include;$(SolutionDir)\dependencies\JSON\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)gl-cube\dependencies\GLM\;$(SolutionDir)gl-cube\dependencies\JSON\;$(SolutionDir)gl-cube\dependencies\GLEW\include;$(SolutionDir)gl-cube\dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\GLEW\lib\Release\Win32;C:\Users\pujim\AppData\Local\Programs\Python\Python38\libs;$(SolutionDir)\dependencies\GLFW\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python38.lib;glew32s.lib;opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\gl-cube\dependencies\GLFW\lib-vc2015;$(SolutionDir)\gl-cube\dependencies\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -131,15 +105,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\dependencies\GLEW\include;$(SolutionDir)\dependencies\GLM\;$(SolutionDir)\dependencies\GLFW\include;$(SolutionDir)\dependencies\JSON\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)gl-cube\dependencies\GLM\;$(SolutionDir)gl-cube\dependencies\JSON\;$(SolutionDir)gl-cube\dependencies\GLEW\include;$(SolutionDir)gl-cube\dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\dependencies\GLEW\lib\Release\Win32;C:\Users\pujim\AppData\Local\Programs\Python\Python38\libs;$(SolutionDir)\dependencies\GLFW\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python38.lib;glew32s.lib;opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\gl-cube\dependencies\GLFW\lib-vc2015;$(SolutionDir)\gl-cube\dependencies\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -170,6 +144,25 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Constants.cpp" />
+    <ClCompile Include="src\Cubelet.cpp" />
+    <ClCompile Include="src\GraphicsController.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\RotationHandler.cpp" />
+    <ClCompile Include="src\RubiksCube.cpp" />
+    <ClCompile Include="src\Shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Constants.h" />
+    <ClInclude Include="src\Cubelet.h" />
+    <ClInclude Include="src\GraphicsController.h" />
+    <ClInclude Include="src\HTTPRequest.h" />
+    <ClInclude Include="src\RotationHandler.h" />
+    <ClInclude Include="src\Rotations.h" />
+    <ClInclude Include="src\RubiksCube.h" />
+    <ClInclude Include="src\Shader.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

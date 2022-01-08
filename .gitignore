@@ -363,7 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # TODO file
-**/TODO.txt
+**/TODO
 
 # Python venv
 **/venv

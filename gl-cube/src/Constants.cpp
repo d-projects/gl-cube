@@ -108,5 +108,5 @@ namespace Constants {
     extern const int WINDOW_WIDTH = 600;
     extern const int WINDOW_HEIGHT = 600;
 
-    extern const char* TITLE = "Cube Scan";
+    extern const char* TITLE = "GL Cube";
 }
