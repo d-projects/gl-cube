@@ -88,13 +88,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)gl-cube\dependencies\GLM\;$(SolutionDir)gl-cube\dependencies\JSON\;$(SolutionDir)gl-cube\dependencies\GLEW\include;$(SolutionDir)gl-cube\dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\gl-cube\include\;$(SolutionDir)gl-cube\lib\GLM\;$(SolutionDir)gl-cube\lib\JSON\;$(SolutionDir)gl-cube\lib\GLEW\include;$(SolutionDir)gl-cube\lib\HTTP_REQUEST\;$(SolutionDir)gl-cube\lib\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glew32s.lib;opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)\gl-cube\dependencies\GLFW\lib-vc2015;$(SolutionDir)\gl-cube\dependencies\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\gl-cube\lib\GLFW\lib-vc2015;$(SolutionDir)\gl-cube\lib\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)gl-cube\dependencies\GLM\;$(SolutionDir)gl-cube\dependencies\JSON\;$(SolutionDir)gl-cube\dependencies\GLEW\include;$(SolutionDir)gl-cube\dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\gl-cube\include\;$(SolutionDir)gl-cube\lib\GLM\;$(SolutionDir)gl-cube\lib\JSON\;$(SolutionDir)gl-cube\lib\GLEW\include;$(SolutionDir)gl-cube\lib\HTTP_REQUEST\;$(SolutionDir)gl-cube\lib\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,7 +113,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glew32s.lib;opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)\gl-cube\dependencies\GLFW\lib-vc2015;$(SolutionDir)\gl-cube\dependencies\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\gl-cube\lib\GLFW\lib-vc2015;$(SolutionDir)\gl-cube\lib\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

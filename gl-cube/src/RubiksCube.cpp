@@ -144,7 +144,7 @@ void RubiksCube::render() {
 
 	if (_rh.rotationStarted) {
 		_rh.handleRotation();
-		if (!_rh.rotationStarted) { _rh.repositionCubes(_cubes); printColors(); }
+		if (!_rh.rotationStarted) _rh.repositionCubes(_cubes);
 	}
 }
 
@@ -212,15 +212,13 @@ void RubiksCube::solve() {
 	        std::string bodyJson = { response.body.begin(), response.body.end() };
 	        auto body = nlohmann::json::parse(bodyJson);
 	        if (body.count("error") != 0) {
-	            //body["error"][0];
-				std::cout << "Error occurred";
+				std::cout << "Error occurred connecting to server";
 	        }
 	        else {
 	            std::vector<std::string> moves = body["moves"];
 				std::reverse(moves.begin(), moves.end());
 
 				for (auto move : moves) {
-					std::cout << move << " ";
 					_solveMoves.push((std::string)move);
 				}
 	        }       

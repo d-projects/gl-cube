@@ -6,7 +6,7 @@ Cubelet::Cubelet() {}
 
 Cubelet::Cubelet(std::vector<std::string> faceColors, unsigned int vao, unsigned int vbo, int i, int j, int k) {
 	_vao = vao;
-	_shader = Shader("src/shader.vs", "src/shader.fs");
+	_shader = Shader("shaders/shader.vs", "shaders/shader.fs");
 	_rotationModel = glm::mat4(1.0f);
     _rotationModel = glm::translate(_rotationModel, glm::vec3(
         Constants::SEPARATION_FACTOR * (k - 1) * Constants::SCALE,
