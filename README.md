@@ -7,7 +7,7 @@ This is a virtual (3 x 3) Rubik's Cube application, allowing all the moves possi
 
 ## Setup
 1. `docker compose up -d` (runs the solver server)
-2. Open the gl-cube.sln file, and run the application.
+2. Open the gl-cube.sln file, swicth to the x86 platform, and run the application.
 
 ## Controlling the Rubik's Cube
 The cube's face can be individually rotated, and the whole cube itself can also be rotated. The direction of face turns are from a bird's-eye view perspective on the face. 
