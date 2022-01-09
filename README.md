@@ -35,6 +35,7 @@ The front face is the rightmost face of the two faces facing outwards.
 Pressing `S` solves the cube.
 
 Here's an animation of it solving one:
+<br/>
 ![Solving Demo](demo/solving.gif)
 
 
